@@ -42,9 +42,10 @@ $$;
 -- 取得首頁貼文列表的 Function (包含完整的統計數據)
 CREATE OR REPLACE FUNCTION fn_get_all_posts()
 RETURNS TABLE (
-    post_id BIGINT,
+    id BIGINT,          
     user_id BIGINT,
     username VARCHAR,
+    avatar_color VARCHAR,  
     content TEXT,
     image_url VARCHAR,
     created_at TIMESTAMP,
@@ -54,7 +55,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY 
-    SELECT p.id, p.user_id, u.username, p.content, p.image_url, p.created_at, p.comment_count
+    SELECT p.id, p.user_id, u.username, u.avatar_color, p.content, p.image_url, p.created_at, p.comment_count
     FROM posts p
     JOIN users u ON p.user_id = u.id
     ORDER BY p.created_at DESC;
@@ -64,9 +65,10 @@ $$;
 -- 取得單一貼文的 Function (供留言詳細頁面使用)
 CREATE OR REPLACE FUNCTION fn_get_post_by_id(p_post_id BIGINT)
 RETURNS TABLE (
-    post_id BIGINT,
+    id BIGINT,              
     user_id BIGINT,
     username VARCHAR,
+    avatar_color VARCHAR,   
     content TEXT,
     image_url VARCHAR,
     created_at TIMESTAMP,
@@ -76,7 +78,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY 
-    SELECT p.id, p.user_id, u.username, p.content, p.image_url, p.created_at, p.comment_count
+    SELECT p.id, p.user_id, u.username, u.avatar_color, p.content, p.image_url, p.created_at, p.comment_count
     FROM posts p
     JOIN users u ON p.user_id = u.id
     WHERE p.id = p_post_id;

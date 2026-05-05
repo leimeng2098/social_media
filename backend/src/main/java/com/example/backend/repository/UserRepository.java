@@ -37,9 +37,17 @@ public class UserRepository {
             user.setEmail(rs.getString("email"));
             user.setPhoneNumber(rs.getString("phone_number"));
             user.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            user.setBiography(rs.getString("biography"));
+            user.setAvatarColor(rs.getString("avatar_color"));
+
             return user;
         }, phoneNumber);
 
         return users.isEmpty() ? null : users.get(0);
+    }
+
+    public void updateUserProfileViaSP(Long id, String username, String biography, String avatarColor) {
+        String sql = "CALL sp_update_user_profile(?, ?, ?, ?)";
+        jdbcTemplate.update(sql, id, username, biography, avatarColor);
     }
 }

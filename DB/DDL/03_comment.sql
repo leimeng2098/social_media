@@ -41,10 +41,11 @@ $$;
 -- 取得特定貼文的所有留言 Function
 CREATE OR REPLACE FUNCTION fn_get_comments_by_post(p_post_id BIGINT)
 RETURNS TABLE (
-    comment_id BIGINT,
+    id BIGINT,             
     post_id BIGINT,
     user_id BIGINT,
     username VARCHAR,
+    avatar_color VARCHAR,  
     content TEXT,
     created_at TIMESTAMP
 )
@@ -52,7 +53,7 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY 
-    SELECT c.id, c.post_id, c.user_id, u.username, c.content, c.created_at
+    SELECT c.id, c.post_id, c.user_id, u.username, u.avatar_color, c.content, c.created_at
     FROM comments c
     JOIN users u ON c.user_id = u.id
     WHERE c.post_id = p_post_id

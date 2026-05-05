@@ -22,12 +22,13 @@ public class CommentRepository {
         String sql = "SELECT * FROM fn_get_comments_by_post(?)";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Comment comment = new Comment();
-            comment.setId(rs.getLong("comment_id"));
+            comment.setId(rs.getLong("id"));
             comment.setPostId(rs.getLong("post_id"));
             comment.setUserId(rs.getLong("user_id"));
             comment.setUsername(rs.getString("username"));
             comment.setContent(rs.getString("content"));
             comment.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            comment.setAvatarColor(rs.getString("avatar_color"));
             return comment;
         }, postId);
     }

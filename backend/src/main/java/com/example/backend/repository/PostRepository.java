@@ -24,12 +24,13 @@ public class PostRepository {
         String sql = "SELECT * FROM fn_get_all_posts()";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Post post = new Post();
-            post.setId(rs.getLong("post_id"));
+            post.setId(rs.getLong("id"));
             post.setUserId(rs.getLong("user_id"));
             post.setUsername(rs.getString("username"));
             post.setContent(rs.getString("content"));
             post.setImageUrl(rs.getString("image_url"));
             post.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            post.setAvatarColor(rs.getString("avatar_color"));
 
             post.setCommentCount(rs.getInt("comment_count"));
 
@@ -46,12 +47,13 @@ public class PostRepository {
         String sql = "SELECT * FROM fn_get_post_by_id(?)";
         List<Post> posts = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Post post = new Post();
-            post.setId(rs.getLong("post_id"));
+            post.setId(rs.getLong("id"));
             post.setUserId(rs.getLong("user_id"));
             post.setUsername(rs.getString("username"));
             post.setContent(rs.getString("content"));
             post.setImageUrl(rs.getString("image_url"));
             post.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            post.setAvatarColor(rs.getString("avatar_color"));
             post.setCommentCount(rs.getInt("comment_count"));
             return post;
         }, id);

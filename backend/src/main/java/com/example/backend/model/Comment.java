@@ -8,6 +8,7 @@ public class Comment {
     private String username; // Join 來的
     private String content;
     private LocalDateTime createdAt;
+    private String avatarColor;
 
     // ---  Getter & Setter ---
     public Long getId() { return id; }
@@ -27,4 +28,7 @@ public class Comment {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getAvatarColor() { return avatarColor; }
+    public void setAvatarColor(String avatarColor) { this.avatarColor = avatarColor; }
 }

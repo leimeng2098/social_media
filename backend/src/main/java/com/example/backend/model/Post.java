@@ -9,6 +9,7 @@ public class Post {
     private String content;
     private String imageUrl;
     private LocalDateTime createdAt;
+    private String avatarColor;
     private Integer commentCount;
 
     // ---  Getter & Setter ---
@@ -29,6 +30,9 @@ public class Post {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getAvatarColor() { return avatarColor; }
+    public void setAvatarColor(String avatarColor) { this.avatarColor = avatarColor; }
 
     public Integer getCommentCount() { return commentCount; }
     public void setCommentCount(Integer commentCount) { this.commentCount = commentCount; }

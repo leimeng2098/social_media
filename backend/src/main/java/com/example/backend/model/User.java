@@ -8,7 +8,9 @@ public class User {
     private String password;
     private String email;
     private String phoneNumber;
+    private String biography;
     private LocalDateTime createdAt;
+    private String avatarColor;
 
     // ---  Getter & Setter ---
     public Long getId() { return id; }
@@ -26,6 +28,12 @@ public class User {
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
+    public String getBiography() { return biography; }
+    public void setBiography(String biography) { this.biography = biography; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getAvatarColor() { return avatarColor; }
+    public void setAvatarColor(String avatarColor) { this.avatarColor = avatarColor; }
 }

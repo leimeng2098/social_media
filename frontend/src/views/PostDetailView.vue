@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen bg-gray-100 flex justify-center overflow-hidden">
-    
+
     <div class="w-full max-w-2xl bg-white border-x border-gray-200 flex flex-col h-full relative shadow-2xl">
 
       <div class="z-10 bg-white/90 backdrop-blur-sm border-b border-gray-200 p-4 flex items-center shrink-0 sticky top-0">
@@ -17,8 +17,8 @@
         
         <div v-if="post" class="bg-white p-5 border-b border-gray-200 shadow-sm">
           <div class="flex gap-4 mb-3">
-            <div class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold shadow-sm text-xl">
-              {{ post.username?.charAt(0).toUpperCase() }}
+            <div :class="[post.avatarColor || 'bg-blue-500', 'w-12 h-12 rounded-full text-white flex items-center justify-center font-bold shadow-sm text-xl']">
+                {{ post.username?.charAt(0).toUpperCase() }}
             </div>
             <div class="flex flex-col justify-center">
               <div class="font-bold text-gray-900 text-lg">{{ post.username }}</div>
@@ -35,7 +35,7 @@
         <div class="divide-y divide-gray-100">
           <div v-for="comment in comments" :key="comment.id" class="bg-white p-4 hover:bg-gray-50 transition flex gap-3">
             <div class="flex-shrink-0">
-              <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold shadow-sm">
+              <div :class="[comment.avatarColor || 'bg-blue-500', 'w-10 h-10 rounded-full text-white flex items-center justify-center font-bold shadow-sm']">
                 {{ comment.username?.charAt(0).toUpperCase() }}
               </div>
             </div>
@@ -56,7 +56,7 @@
 
       <div class="p-4 bg-white border-t border-gray-200 shrink-0 flex gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <div class="flex-shrink-0 mt-1">
-          <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold shadow-sm">
+          <div :class="[currentUser?.avatarColor || 'bg-blue-500', 'w-10 h-10 rounded-full text-white flex items-center justify-center font-bold shadow-sm']">
             <span v-if="isLoggedIn">{{ currentUser?.username?.charAt(0).toUpperCase() }}</span>
             <span v-else>?</span>
           </div>

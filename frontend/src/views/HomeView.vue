@@ -9,9 +9,12 @@
         <div v-if="!isLoggedIn" @click="goToLogin" class="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-xs cursor-pointer hover:bg-gray-800 transition">
           未登入
         </div>
-        <div v-else class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center text-lg font-bold shadow-md">
-          {{ currentUser?.username?.charAt(0).toUpperCase() }}
+
+        <div v-else @click="openProfile" 
+                :class="[currentUser?.avatarColor || 'bg-blue-500', 'cursor-pointer hover:ring-2 hover:ring-offset-2 hover:ring-blue-500 w-10 h-10 rounded-full text-white flex items-center justify-center text-lg font-bold shadow-md transition-all']">
+            {{ currentUser?.username?.charAt(0).toUpperCase() }}
         </div>
+        
       </div>
 
       <div class="flex-1 overflow-y-auto p-4 bg-gray-50">
@@ -21,8 +24,8 @@
              class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-4 hover:shadow-md transition-shadow flex gap-4 cursor-pointer">
           
           <div class="flex-shrink-0">
-            <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold shadow-sm">
-              {{ post.username?.charAt(0).toUpperCase() }}
+            <div :class="[post.avatarColor || 'bg-blue-500', 'w-10 h-10 rounded-full text-white flex items-center justify-center font-bold shadow-sm']">
+                <span>{{ post.username?.charAt(0).toUpperCase() }}</span>
             </div>
           </div>
           
@@ -74,7 +77,7 @@
       <div class="p-4 bg-white border-t border-gray-200 shrink-0 flex gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <!-- 發文者頭像預覽 -->
         <div class="flex-shrink-0 mt-1">
-          <div class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold shadow-sm">
+          <div :class="[currentUser?.avatarColor || 'bg-blue-500', 'w-10 h-10 rounded-full text-white flex items-center justify-center font-bold shadow-sm']">
             <span v-if="isLoggedIn">{{ currentUser?.username?.charAt(0).toUpperCase() }}</span>
             <span v-else>?</span>
           </div>
@@ -109,6 +112,77 @@
       </div>
 
     </div>
+
+    <div v-if="isProfileOpen" @click="isProfileOpen = false" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-end transition-opacity">
+      
+      <!-- 側邊欄主體 -->
+      <div @click.stop class="w-80 bg-white h-full shadow-2xl flex flex-col animate-slide-in-right">
+        
+        <div class="p-4 flex justify-end border-b border-gray-100">
+          <button @click="isProfileOpen = false" class="text-gray-400 hover:text-gray-800 p-2 bg-gray-50 rounded-full transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
+          
+          <div class="flex justify-center mb-2">
+            <div :class="[profileForm.avatarColor, 'w-24 h-24 rounded-full text-white flex items-center justify-center text-4xl font-bold shadow-lg border-4 border-gray-50 transition-colors duration-300']">
+                {{ profileForm.username?.charAt(0).toUpperCase() }}
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-3 mb-4">
+            <button 
+                v-for="color in colorOptions" 
+                :key="color"
+                @click="profileForm.avatarColor = color"
+                :class="[
+                color, 
+                'w-8 h-8 rounded-full shadow-sm hover:scale-110 transition-transform',
+                profileForm.avatarColor === color ? 'ring-4 ring-gray-300 ring-offset-2' : ''
+                ]"
+            ></button>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-500 mb-1">暱稱 (可修改)</label>
+              <input v-model="profileForm.username" type="text" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-500 mb-1">電話號碼</label>
+              <input :value="currentUser?.phoneNumber" disabled type="text" class="w-full px-3 py-2 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 cursor-not-allowed">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-500 mb-1">Email</label>
+              <input :value="currentUser?.email || '未提供'" disabled type="text" class="w-full px-3 py-2 bg-gray-100 border border-gray-200 rounded-lg text-gray-500 cursor-not-allowed">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-500 mb-1">個人介紹 (可修改)</label>
+              <textarea v-model="profileForm.biography" rows="3" placeholder="介紹一下你自己吧！" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none transition resize-none"></textarea>
+            </div>
+
+            <!-- 儲存按鈕 -->
+            <button @click="handleUpdateProfile" class="w-full bg-blue-500 text-white font-bold py-2.5 rounded-lg hover:bg-blue-600 active:scale-95 transition-all shadow-md mt-2">
+              儲存修改
+            </button>
+          </div>
+        </div>
+
+        <!-- 登出按鈕 -->
+        <div class="p-4 border-t border-gray-100 bg-gray-50">
+          <button @click="handleLogout" class="w-full bg-white border-2 border-red-100 text-red-500 font-bold py-2.5 rounded-lg hover:bg-red-50 hover:border-red-200 transition-colors flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            登出帳號
+          </button>
+        </div>
+
+      </div>
+    </div>
   </div>
 </template>
 
@@ -127,6 +201,8 @@ const currentUser = ref(null)
 const editingPostId = ref(null)
 const editContent = ref('')
 
+const colorOptions = ['bg-blue-500', 'bg-red-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500']
+
 onMounted(() => {
   checkAuth()
   fetchPosts()
@@ -142,6 +218,59 @@ const checkAuth = () => {
 
 const goToLogin = () => {
   router.push('/login')
+}
+
+const isProfileOpen = ref(false)
+const profileForm = ref({
+  username: '',
+  biography: ''
+})
+
+const openProfile = () => {
+  profileForm.value = {
+    username: currentUser.value.username,
+    biography: currentUser.value.biography || '',
+    avatarColor: currentUser.value.avatarColor || 'bg-blue-500'
+  }
+  isProfileOpen.value = true
+}
+
+const handleUpdateProfile = async () => {
+  if (!profileForm.value.username.trim()) {
+    alert('暱稱不能為空！')
+    return
+  }
+
+  try {
+    await api.put(`/users/${currentUser.value.id}`, {
+      username: profileForm.value.username,
+      biography: profileForm.value.biography,
+      avatarColor: profileForm.value.avatarColor
+    })
+    
+    currentUser.value = {
+      ...currentUser.value,
+      username: profileForm.value.username,
+      biography: profileForm.value.biography,
+      avatarColor: profileForm.value.avatarColor
+    }
+    
+    localStorage.setItem('user', JSON.stringify(currentUser.value))
+    
+    alert('個人資料更新成功！')
+    isProfileOpen.value = false 
+    fetchPosts() 
+  } catch (error) {
+    console.error('更新失敗', error)
+    alert('更新失敗，請稍後再試。')
+  }
+}
+
+const handleLogout = () => {
+  localStorage.removeItem('user')
+  currentUser.value = null
+  isLoggedIn.value = false
+  isProfileOpen.value = false
 }
 
 const fetchPosts = async () => {

@@ -28,4 +28,10 @@ public class UserController {
         loggedInUser.setPassword(null);
         return ApiResponse.success("Login successful!", loggedInUser);
     }
+
+    @PutMapping("/{id}")
+    public ApiResponse<String> updateProfile(@PathVariable Long id, @RequestBody UserRequest request) {
+        userService.updateProfile(id, request.getUsername(), request.getBiography(), request.getAvatarColor());
+        return ApiResponse.success("個人資料更新成功！", null);
+    }
 }

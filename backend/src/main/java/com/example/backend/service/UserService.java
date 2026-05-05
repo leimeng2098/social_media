@@ -42,4 +42,11 @@ public class UserService {
 
         return user;
     }
+
+    public void updateProfile(Long id, String username, String biography, String avatarColor) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nickname cannot be empty!");
+        }
+        userRepository.updateUserProfileViaSP(id, username, biography, avatarColor);
+    }
 }
