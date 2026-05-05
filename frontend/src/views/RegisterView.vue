@@ -49,7 +49,10 @@
 
 <script setup>
 import { ref } from 'vue'
-import api from '../api/axios' // 引入剛寫好的連線工具
+import { useRouter } from 'vue-router'
+import api from '../api/axios' 
+
+const router = useRouter()
 
 const form = ref({
   username: '',
@@ -63,6 +66,7 @@ const handleRegister = async () => {
     const response = await api.post('/users/register', form.value)
     if (response.data.success) {
       alert('註冊成功！')
+      router.push('/login')
     }
   } catch (error) {
     console.error('註冊失敗：', error)
