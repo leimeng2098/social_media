@@ -1,46 +1,65 @@
-# 社交媒體全端平台 (Full-Stack Social Media Platform)
+# 系統交接文件：全端社群平台 (Social Media Platform)
 
-這是一個基於 Vue 3 與 Spring Boot 開發的全端社交媒體應用程式，提供完整的使用者註冊、登入、發文與留言功能。後端資料庫高度依賴 PostgreSQL 的預存程序 (Stored Procedure) 來封裝商業邏輯與確保交易安全 (Transaction)。
+本文件旨在提供新進開發者或維護人員關於「全端社群平台」專案的系統架構、開發環境與本地端部署指南，以利快速接手並進行後續開發。
 
-## 🚀 核心技術棧 (Tech Stack)
-* **前端 (Frontend)**: Vue.js 3 (Composition API), Vite, Tailwind CSS, Vue Router, Axios
-* **後端 (Backend)**: Java 17, Spring Boot, Spring Data JDBC
-* **資料庫 (Database)**: PostgreSQL 15+
+---
 
-## ✨ 系統亮點 (Key Features)
-1. **完整 CRUD 週期**: 支援貼文的發佈、修改、刪除與留言功能。
-2. **資料庫層級封裝**: 透過 `Procedure` 處理多表異動 (如新增貼文時同步更新使用者的發文總數)，確保 Transaction 資料一致性。
-3. **資安防護 (Security)**:
-   * **SQL Injection 防禦**: 後端採用 Parameterized Queries (參數化查詢)。
-   * **XSS 防禦**: 實作全域 `XssFilter` 進行輸入消毒，搭配 Vue 的自動跳脫機制實現雙層防護。
-   * **密碼安全**: 使用加鹽雜湊 (Hash) 儲存使用者密碼。
+## 壹、資料庫 (Database)
 
-## 📁 資料夾結構 (Project Structure)
-* `/frontend`: Vue 3 前端專案程式碼
-* `/backend`: Spring Boot 後端專案程式碼
-* `/DB`: 資料庫初始化與 DDL/DML SQL 腳本 (包含 Schema 與 Procedures)
+本專案將核心業務邏輯（如：發文與計數器的連動）下放至資料庫層，以確保 Transaction 的絕對一致性並減輕應用層負擔。
 
-## 🛠️ 本地端執行指南 (Setup Instructions)
+* **環境依賴**：PostgreSQL 15 或以上版本
+* **核心架構**：
+  * 使用關聯式設計，涵蓋 `users`、`posts`、`comments` 三大核心 Domain。
+  * 採用 **Stored Procedure** 封裝寫入邏輯（如 `sp_create_post`），並透過 **Function** 處理多表關聯查詢。
+* **部署與初始化指令**：
+  請確保已啟動 PostgreSQL 服務，並透過 DBeaver 或 psql 工具依序執行 `/DB` 目錄下的腳本：
+  1. 執行 `00_init_database.sql` 建立 `social_media` 資料庫。
+  2. 切換連線至 `social_media` 資料庫。
+  3. 依序執行 `01_user.sql`、`02_post.sql`、`03_comment.sql` 完成 Table、Index 與 Procedures 的建置。
 
-### 1. 資料庫設定
-1. 安裝並啟動 PostgreSQL。
-2. 執行 `/DB` 目錄下的 `00_init_database.sql` 建立資料庫。
-3. 切換至建立好的資料庫，依序執行 `01_user.sql`, `02_post.sql`, `03_comment.sql`。
-4. 修改後端 `/backend/src/main/resources/application.properties` 中的資料庫連線帳號密碼。
+---
 
-### 2. 啟動後端 (Spring Boot)
-進入 `backend` 目錄，使用 Gradle 啟動：
-\`\`\`bash
-cd backend
-./gradlew bootRun
-\`\`\`
-服務將運行於 `http://localhost:8080`。
+## 貳、後端 (Backend)
 
-### 3. 啟動前端 (Vue.js)
-進入 `frontend` 目錄，安裝依賴並啟動開發伺服器：
-\`\`\`bash
-cd frontend
-npm install
-npm run dev
-\`\`\`
-網頁將運行於 `http://localhost:5173`。
+後端主要作為 API Gateway，負責接收前端請求、進行參數校驗與資安過濾，並橋接資料庫的預存程序。
+
+* **環境依賴**：Java 17, Spring Boot 3.x, Gradle
+* **核心架構**：
+  * **RESTful API**：遵循標準 HTTP 狀態碼與動詞 (GET/POST/PUT/DELETE)。
+  * **分層設計**：Controller (路由) -> Service (業務檢核) -> Repository (資料存取)。
+  * **資料庫溝通**：使用 Spring Data JDBC (`JdbcTemplate`) 呼叫 Stored Procedure，並嚴格採用**參數化查詢 (Parameterized Queries)** 阻絕 SQL Injection。
+  * **資安實作**：配置全域 `XssFilter` 攔截惡意腳本輸入；使用 `GlobalExceptionHandler` 統一攔截並格式化錯誤回應。
+* **啟動指令**：
+  進入 `/backend` 目錄前，請先至 `src/main/resources/application.properties` 確認資料庫的連線帳密是否正確。
+  ```bash
+  cd backend
+  
+  # 使用 Gradle Wrapper 啟動應用程式 (預設 Port: 8080)
+  ./gradlew bootRun
+
+---
+
+## 參、前端 (Frontend)
+
+前端負責畫面渲染與狀態管理，採前後端分離架構，所有資料皆透過 Axios 向後端 API 請求。
+
+* **環境依賴**：Node.js (v18+), npm (或 yarn)
+* **核心技術棧**：Vue 3 (Composition API), Vite, Tailwind CSS, Vue Router, Axios
+* **核心架構**：
+  * **狀態管理**：全面採用響應式變數 (`ref`, `reactive`) 進行狀態追蹤與畫面連動。
+  * **路由控制**：透過 Vue Router 實現 SPA (Single Page Application)，並支援動態參數路由（如貼文詳細頁 `/post/:id`）。
+  * **API 模組化**：實作 Axios 基礎配置 (位於 `/src/api/axios.js`)，統一處理後端 API 的 Base URL 與跨域 (CORS) 請求。
+  * **XSS 防禦**：利用 Vue 原生模板綁定機制（`{{ }}`）自動跳脫特殊字元，全專案嚴禁使用 `v-html`，形成前端防護網。
+* **啟動指令**：
+  進入 `/frontend` 目錄進行套件安裝與啟動：
+  ```bash
+  cd frontend
+  
+  # 首次運行需安裝環境依賴套件
+  npm install
+  
+  # 啟動本地端開發伺服器
+  npm run dev
+  ```
+服務啟動後，請於瀏覽器開啟 http://localhost:5173 進行瀏覽與測試。

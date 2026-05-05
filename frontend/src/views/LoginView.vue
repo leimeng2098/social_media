@@ -5,7 +5,6 @@
       <p class="text-gray-500 text-center mb-8">登入以繼續分享你的生活</p>
       
       <form @submit.prevent="handleLogin" class="space-y-5">
-        <!-- 這裡改成電話號碼 -->
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1">電話號碼</label>
           <input v-model="form.phoneNumber" type="tel" required
@@ -41,7 +40,6 @@ import api from '../api/axios'
 
 const router = useRouter()
 
-// 資料模型改成 phoneNumber
 const form = ref({
   phoneNumber: '',
   password: ''

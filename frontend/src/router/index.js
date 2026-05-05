@@ -27,7 +27,7 @@ const router = createRouter({
       redirect: '/login' 
     },
     {
-      path: '/post/:id', // :id 是動態參數
+      path: '/post/:id', 
       name: 'postDetail',
       component: PostDetailView
     }

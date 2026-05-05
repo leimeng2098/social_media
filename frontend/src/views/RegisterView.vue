@@ -63,7 +63,6 @@ const handleRegister = async () => {
     const response = await api.post('/users/register', form.value)
     if (response.data.success) {
       alert('註冊成功！')
-      // 成功後跳轉到登入頁面
     }
   } catch (error) {
     console.error('註冊失敗：', error)
