@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/social_media
+    username: postgres
+
+    password: pWd1234 # your database password
+
+    driver-class-name: org.postgresql.Driver
+
+  jdbc:
+    template:
+      show-sql: true

@@ -1,0 +1,69 @@
+# =========================
+# 1. 作業系統 (OS) 暫存檔
+# =========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================
+# 2. 開發環境與 IDE 設定檔
+# =========================
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# =========================
+# 3. 前端 (Vue.js / Node.js)
+# =========================
+# 依賴套件
+frontend/node_modules/
+
+# 測試與執行日誌
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Vue 專案建置產出的靜態檔案 (發布用)
+frontend/dist/
+frontend/dist-ssr/
+
+# 前端環境變數 (避免將敏感的 API Key 等推上 GitHub)
+frontend/.env.local
+frontend/.env.*.local
+
+# =========================
+# 4. 後端 (Spring Boot / Java)
+# =========================
+# 編譯產出檔
+backend/target/
+backend/out/
+
+# Gradle 相關暫存
+backend/.gradle/
+backend/build/
+
+# 日誌檔
+backend/logs/
+*.log
+
+# =========================
+# 5. 資料庫與資安防護提醒
+# =========================
+# (注意：你的 DB/ 目錄包含 DDL/DML，這些"需要"進版控，所以不要 ignore 它)
+# 但如果有資料庫備份檔 (如動輒數 GB 的 .bak 或 .dump)，請忽略
+*.sql.gz
+*.bak
+*.dump
+
+# 後端環境變數與敏感設定
+# 如果你的 application.yml 寫死了本機或正式機的 DB 密碼，建議區分設定檔
+# 例如把敏感資訊寫在 application-secret.yml 並在此忽略
+backend/src/main/resources/application-secret.yml
