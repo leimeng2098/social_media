@@ -34,7 +34,7 @@
 
 後端主要作為 API Gateway，負責接收前端請求、進行參數校驗與資安過濾，並橋接資料庫的預存程序。
 
-* **環境依賴**：Java 17, Spring Boot 3.x, Gradle
+* **環境依賴**：Java 17, Spring Boot, Gradle
 * **核心架構**：
   * **RESTful API**：遵循標準 HTTP 狀態碼與動詞 (GET/POST/PUT/DELETE)。
   * **分層設計**：Controller (路由) -> Service (業務檢核) -> Repository (資料存取)。
