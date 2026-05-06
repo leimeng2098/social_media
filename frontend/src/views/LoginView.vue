@@ -8,15 +8,21 @@
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1">電話號碼</label>
           <input v-model="form.phoneNumber" type="tel" required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" 
+            :class="[errorMessage ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500']"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition" 
             placeholder="0912345678">
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1">密碼</label>
           <input v-model="form.password" type="password" required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" 
+            :class="[errorMessage ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500']"
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent outline-none transition" 
             placeholder="請輸入密碼">
+        </div>
+
+        <div v-if="errorMessage" class="text-red-500 text-sm font-bold text-center bg-red-50 py-2 rounded-lg animate-pulse">
+          {{ errorMessage }}
         </div>
 
         <button type="submit" 
@@ -34,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../api/axios'
 
@@ -45,21 +51,26 @@ const form = ref({
   password: ''
 })
 
+const errorMessage = ref('')
+
+watch(form, () => {
+  errorMessage.value = ''
+}, { deep: true })
+
 const handleLogin = async () => {
   try {
     const response = await api.post('/users/login', form.value)
     
-    if (response.status === 200) {
+    if (response.data.success) {
       const actualUserData = response.data.data ? response.data.data : response.data
-      
       localStorage.setItem('user', JSON.stringify(actualUserData))
-      
       router.push('/')
+    } else {
+      errorMessage.value = '帳號或密碼錯誤'
     }
   } catch (error) {
     console.error('登入失敗：', error)
-    const errorMsg = error.response?.data || '登入失敗，請檢查網路連線。'
-    alert(errorMsg)
+    errorMessage.value = '帳號或密碼錯誤'
   }
 }
 </script>

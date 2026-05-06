@@ -4,6 +4,7 @@ import com.example.backend.model.User;
 import com.example.backend.model.dto.UserRequest;
 import com.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Service
 public class UserService {
@@ -13,13 +14,12 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // 註冊邏輯
     public void register(UserRequest request) {
         if (request.getUsername() == null || request.getPassword() == null || request.getPhoneNumber() == null) {
             throw new IllegalArgumentException("Username, password, and phone number are required!");
         }
 
-        String hashedPassword = request.getPassword();
+        String hashedPassword = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
 
         userRepository.registerUserViaSP(
                 request.getUsername(),
@@ -36,7 +36,7 @@ public class UserService {
 
         User user = userRepository.findByPhoneNumberViaSP(request.getPhoneNumber());
 
-        if (user == null || !user.getPassword().equals(request.getPassword())) {
+        if (user == null || !BCrypt.checkpw(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Incorrect phone number or password!");
         }
 

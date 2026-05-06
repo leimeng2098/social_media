@@ -8,18 +8,18 @@
 -- 1. 清空所有資料表，並重置 ID 遞增序列
 TRUNCATE TABLE comments, posts, users RESTART IDENTITY CASCADE;
 
--- 2. 新增 10 位使用者 (密碼先統一代入一個簡單的雜湊值示意)
+-- 2. 新增 10 位使用者 (密碼已使用 BCrypt 雜湊，真實密碼皆為 123456)
 INSERT INTO users (username, phone_number, email, password_hash, biography) VALUES
-('全端菜鳥', '0911000111', 'dev@test.com', 'hashed_pwd_123', '持續學習 Vue 與 Spring Boot 中！'),
-('吃貨小美', '0922000222', 'foodie@test.com', 'hashed_pwd_123', '用鏡頭記錄各地的美食🍜'),
-('貓奴阿李', '0933000333', 'catlover@test.com', 'hashed_pwd_123', '主子每天都在鍵盤上睡覺。'),
-('電影狂人', '0944000444', 'movie@test.com', 'hashed_pwd_123', '無雷影評，週末都在電影院度過。'),
-('拿鐵去冰', '0955000555', 'coffee@test.com', 'hashed_pwd_123', '咖啡因是我的生命之水☕'),
-('說走就走', '0966000666', 'travel@test.com', 'hashed_pwd_123', '喜歡拍風景，熱愛自由行。'),
-('健身房打卡', '0977000777', 'gym@test.com', 'hashed_pwd_123', '深蹲救台灣！💪'),
-('愛看書的魚', '0988000888', 'book@test.com', 'hashed_pwd_123', '文字有治癒人心的力量。'),
-('耳機不離身', '0999000999', 'music@test.com', 'hashed_pwd_123', '各種類型的音樂都聽。'),
-('夜貓子', '0900000000', 'night@test.com', 'hashed_pwd_123', '越晚越有靈感。');
+('全端菜鳥', '0911000111', 'dev@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '持續學習 Vue 與 Spring Boot 中！'),
+('吃貨小美', '0922000222', 'foodie@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '用鏡頭記錄各地的美食🍜'),
+('貓奴阿李', '0933000333', 'catlover@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '主子每天都在鍵盤上睡覺。'),
+('電影狂人', '0944000444', 'movie@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '無雷影評，週末都在電影院度過。'),
+('拿鐵去冰', '0955000555', 'coffee@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '咖啡因是我的生命之水☕'),
+('說走就走', '0966000666', 'travel@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '喜歡拍風景，熱愛自由行。'),
+('健身房打卡', '0977000777', 'gym@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '深蹲救台灣！💪'),
+('愛看書的魚', '0988000888', 'book@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '文字有治癒人心的力量。'),
+('耳機不離身', '0999000999', 'music@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '各種類型的音樂都聽。'),
+('夜貓子', '0900000000', 'night@test.com', '$2a$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjGPI822ze', '越晚越有靈感。');
 
 -- 3. 新增 30 篇貼文 (使用 INTERVAL 模擬不同時間點發佈)
 INSERT INTO posts (user_id, content, created_at) VALUES
@@ -97,7 +97,7 @@ INSERT INTO comments (post_id, user_id, content, created_at) VALUES
 (30, 2, '一定沒問題的！加油！', NOW() - INTERVAL '2 hours' + INTERVAL '10 minutes'),
 (30, 5, '上線完記得請大家喝飲料慰勞一下XD', NOW() - INTERVAL '2 hours' + INTERVAL '45 minutes');
 
--- 5. 批次更新計數器 (因為我們是直接大量 INSERT，沒有經過 Procedure，所以需要手動同步一次計數器)
+-- 5. 批次更新計數器
 UPDATE users u
 SET post_count = (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id);
 
