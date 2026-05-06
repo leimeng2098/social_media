@@ -62,4 +62,4 @@
   請確保已啟動 PostgreSQL 服務，並透過 DBeaver 或 psql 工具依序執行 `/DB` 目錄下的腳本：
   1. 執行 `00_init_database.sql` 建立 `social_media` 資料庫。
   2. 切換連線至 `social_media` 資料庫。
-  3. 依序執行 `01_user.sql`、`02_post.sql`、`03_comment.sql`、`04_post_actions.sql`、`05_mock_data.sql`、`06_user_profile.sql` 完成 Table、Index 與 Procedures 的建置。
+  3. 依序執行 `01_user.sql`、`02_post.sql`、`03_comment.sql`、`04_post_actions.sql`、`05_user_profile.sql`、`06_mock_data.sql` 完成 Table、Index 與 Procedures 的建置。
